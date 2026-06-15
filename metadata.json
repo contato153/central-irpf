@@ -1,0 +1,8 @@
+{
+  "name": "Central IRPF L&M",
+  "description": "Sistema de gestão operacional e financeira para declarações de IRPF, com Kanban, portal do cliente, controle de honorários, filtros persistentes e gestão de documentos permanentes.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

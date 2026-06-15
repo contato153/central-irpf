@@ -1,0 +1,292 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "System user (staff)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "authProvider": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "gestor", "analista"] },
+        "status": { "type": "string", "enum": ["active", "inactive"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "role", "status"]
+    },
+    "Client": {
+      "title": "Client",
+      "description": "Taxpayer client profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "name": { "type": "string" },
+        "cpf": { "type": "string" },
+        "birthDate": { "type": "string", "format": "date" },
+        "maritalStatus": { "type": "string" },
+        "profession": { "type": "string" },
+        "phone": { "type": "string" },
+        "whatsapp": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "addressStreet": { "type": "string" },
+        "addressNumber": { "type": "string" },
+        "addressComplement": { "type": "string" },
+        "addressDistrict": { "type": "string" },
+        "addressCity": { "type": "string" },
+        "addressState": { "type": "string" },
+        "addressZipCode": { "type": "string" },
+        "internalManagerId": { "type": "string" },
+        "notes": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "inactive"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "cpf", "status"]
+    },
+    "ClientDependent": {
+      "title": "Client Dependent",
+      "description": "Dependent of a taxpayer client",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "clientId": { "type": "string" },
+        "name": { "type": "string" },
+        "cpf": { "type": "string" },
+        "birthDate": { "type": "string", "format": "date" },
+        "relationship": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["clientId", "name"]
+    },
+    "Declaration": {
+      "title": "Declaration",
+      "description": "Tax declaration process",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "clientId": { "type": "string" },
+        "exerciseYear": { "type": "integer" },
+        "calendarYear": { "type": "integer" },
+        "declarationType": { "type": "string" },
+        "obligationStatus": { "type": "string" },
+        "assignedToUserId": { "type": "string" },
+        "openedAt": { "type": "string", "format": "date-time" },
+        "dueDate": { "type": "string", "format": "date-time" },
+        "deliveredAt": { "type": "string", "format": "date-time" },
+        "kanbanStage": { "type": "string" },
+        "reviewStatus": { "type": "string" },
+        "calculationModel": { "type": "string" },
+        "taxToPay": { "type": "number" },
+        "refundAmount": { "type": "number" },
+        "receiptNumber": { "type": "string" },
+        "priorityLabel": { "type": "string" },
+        "hasCommission": { "type": "boolean" },
+        "commissionPercentage": { "type": "number" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["clientId", "exerciseYear", "kanbanStage"]
+    },
+    "PricingHistory": {
+      "title": "Pricing History",
+      "description": "Financial record of a declaration",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "clientId": { "type": "string" },
+        "declarationId": { "type": "string" },
+        "exerciseYear": { "type": "integer" },
+        "grossAmount": { "type": "number" },
+        "discountAmount": { "type": "number" },
+        "finalAmount": { "type": "number" },
+        "paymentMethod": { "type": "string" },
+        "dueDate": { "type": "string", "format": "date" },
+        "paidAt": { "type": "string", "format": "date-time" },
+        "paymentStatus": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["clientId", "declarationId", "finalAmount", "paymentStatus"]
+    },
+    "DocumentRequest": {
+      "title": "Document Request",
+      "description": "Request for documents from a client",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "declarationId": { "type": "string" },
+        "clientId": { "type": "string" },
+        "token": { "type": "string" },
+        "publicLink": { "type": "string" },
+        "status": { "type": "string" },
+        "sentAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "createdByUserId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["declarationId", "clientId", "token", "status"]
+    },
+    "ChecklistTemplate": {
+      "title": "Document Checklist Template",
+      "description": "Template for document checklist items",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "label": { "type": "string" },
+        "required": { "type": "boolean" },
+        "sortOrder": { "type": "integer" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "label", "active"]
+    },
+    "ChecklistItem": {
+      "title": "Document Checklist Item",
+      "description": "Specific item in a document request checklist",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "requestId": { "type": "string" },
+        "declarationId": { "type": "string" },
+        "category": { "type": "string" },
+        "label": { "type": "string" },
+        "required": { "type": "boolean" },
+        "status": { "type": "string" },
+        "reviewNote": { "type": "string" },
+        "sortOrder": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["requestId", "label", "status"]
+    },
+    "UploadedFile": {
+      "title": "Uploaded File",
+      "description": "File uploaded by client or staff",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "requestId": { "type": "string" },
+        "declarationId": { "type": "string" },
+        "checklistItemId": { "type": "string" },
+        "clientId": { "type": "string" },
+        "fileNameOriginal": { "type": "string" },
+        "fileNameStored": { "type": "string" },
+        "fileUrl": { "type": "string" },
+        "mimeType": { "type": "string" },
+        "sizeBytes": { "type": "integer" },
+        "uploadedByType": { "type": "string", "enum": ["client", "staff"] },
+        "uploadedByUserId": { "type": "string" },
+        "uploadedAt": { "type": "string", "format": "date-time" },
+        "reviewStatus": { "type": "string" },
+        "reviewNote": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["clientId", "fileUrl", "reviewStatus"]
+    },
+    "KanbanHistory": {
+      "title": "Kanban History",
+      "description": "Log of stage movements in Kanban",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "declarationId": { "type": "string" },
+        "fromStage": { "type": "string" },
+        "toStage": { "type": "string" },
+        "movedByUserId": { "type": "string" },
+        "movedAt": { "type": "string", "format": "date-time" },
+        "comment": { "type": "string" }
+      },
+      "required": ["declarationId", "toStage", "movedByUserId", "movedAt"]
+    },
+    "DeclarationComment": {
+      "title": "Declaration Comment",
+      "description": "Internal or client comment on a declaration",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "declarationId": { "type": "string" },
+        "authorType": { "type": "string", "enum": ["client", "staff"] },
+        "authorUserId": { "type": "string" },
+        "message": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["declarationId", "message", "authorType", "createdAt"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "System notification for a user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string" },
+        "relatedEntityType": { "type": "string" },
+        "relatedEntityId": { "type": "string" },
+        "targetUserId": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "readAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["targetUserId", "title", "message", "createdAt"]
+    },
+    "AuditLog": {
+      "title": "Audit Log",
+      "description": "System audit log for tracking changes",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "entityType": { "type": "string" },
+        "entityId": { "type": "string" },
+        "action": { "type": "string" },
+        "oldValue": { "type": "object" },
+        "newValue": { "type": "object" },
+        "userId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["entityType", "entityId", "action", "createdAt"]
+    },
+    "ClientDocument": {
+      "title": "Client Document",
+      "description": "Document attached to a client profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "clientId": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "fileUrl": { "type": "string" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["clientId", "title", "fileUrl"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "User", "description": "Staff profiles" },
+    "/clients/{clientId}": { "schema": "Client", "description": "Taxpayer clients" },
+    "/client_dependents/{dependentId}": { "schema": "ClientDependent", "description": "Dependents of clients" },
+    "/client_documents/{docId}": { "schema": "ClientDocument", "description": "Documents of clients" },
+    "/declarations/{declarationId}": { "schema": "Declaration", "description": "Tax declarations" },
+    "/pricing_history/{pricingId}": { "schema": "PricingHistory", "description": "Financial records" },
+    "/document_requests/{requestId}": { "schema": "DocumentRequest", "description": "Document requests" },
+    "/document_checklist_templates/{templateId}": { "schema": "ChecklistTemplate", "description": "Checklist templates" },
+    "/document_checklist_items/{itemId}": { "schema": "ChecklistItem", "description": "Checklist items" },
+    "/uploaded_files/{fileId}": { "schema": "UploadedFile", "description": "Uploaded files" },
+    "/kanban_history/{historyId}": { "schema": "KanbanHistory", "description": "Kanban movement history" },
+    "/declaration_comments/{commentId}": { "schema": "DeclarationComment", "description": "Comments on declarations" },
+    "/notifications/{notificationId}": { "schema": "Notification", "description": "User notifications" },
+    "/audit_logs/{logId}": { "schema": "AuditLog", "description": "System audit logs" }
+  }
+}

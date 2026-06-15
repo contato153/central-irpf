@@ -1,0 +1,137 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isDefaultAdmin() {
+      return isAuthenticated() && 
+             request.auth.token.email == "lucas@lemcontabilidade.com";
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email == "lucas@lemcontabilidade.com" ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    function isGestor() {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'gestor';
+    }
+
+    function isAnalista() {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'analista';
+    }
+
+    function isStaff() {
+      return isAdmin() || isGestor() || isAnalista();
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isStaff());
+      allow create: if isAdmin() || (isAuthenticated() && request.auth.uid == userId && request.resource.data.role == 'analista');
+      allow update: if isAdmin() || (isAuthenticated() && request.auth.uid == userId && request.resource.data.role == resource.data.role);
+      allow delete: if isAdmin();
+    }
+
+    match /clients/{clientId} {
+      allow read: if isStaff();
+      allow create: if isStaff() && hasRequiredFields(['name', 'cpf', 'status']);
+      allow update: if isStaff();
+      allow delete: if isAdmin();
+    }
+
+    match /client_dependents/{dependentId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    match /client_documents/{docId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    match /declarations/{declarationId} {
+      allow read: if isStaff();
+      allow update: if isStaff();
+      allow create: if isStaff();
+      allow delete: if isAdmin();
+    }
+
+    match /pricing_history/{pricingId} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+
+    match /document_requests/{requestId} {
+      allow read: if isStaff() || true; // Allow portal to fetch by ID or token query
+      allow create: if isStaff();
+      allow update: if isStaff() || (
+        // Allow portal updates (uploading files, adding observations)
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['items', 'status', 'updatedAt', 'generalObservation'])
+      );
+      allow delete: if isAdmin();
+    }
+
+    match /document_checklist_templates/{templateId} {
+      allow read: if isStaff();
+      allow write: if isAdmin() || isGestor();
+    }
+
+    match /document_checklist_items/{itemId} {
+      allow read: if isStaff() || true;
+      allow write: if isStaff();
+    }
+
+    match /uploaded_files/{fileId} {
+      allow read: if isStaff();
+      allow create: if true; 
+      allow update, delete: if isStaff();
+    }
+
+    match /kanban_history/{historyId} {
+      allow read: if isStaff();
+      allow create: if isStaff();
+    }
+
+    match /declaration_comments/{commentId} {
+      allow read: if isStaff();
+      allow create: if isStaff();
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() && request.auth.uid == resource.data.targetUserId;
+      allow update: if isAuthenticated() && request.auth.uid == resource.data.targetUserId && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readAt']);
+      allow create: if isStaff();
+    }
+
+    match /audit_logs/{logId} {
+      allow read: if isAdmin() || isGestor();
+      allow create: if isAuthenticated();
+    }
+
+    match /settings/{settingId} {
+      allow read: if isStaff();
+      allow write: if isAdmin();
+    }
+  }
+}

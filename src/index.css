@@ -1,0 +1,60 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* L&M Brand Colors */
+  --color-brand-yellow: #FFCC29;
+  --color-brand-yellow-dark: #FFCC00;
+  --color-brand-beige: #FFF8AF;
+  --color-brand-black: #000000;
+  --color-brand-green: #4CB752;
+  --color-brand-green-dark: #0B3D1A;
+  --color-brand-blue: #3E4095;
+  --color-brand-gray: #77787B;
+}
+
+body {
+  @apply font-sans text-slate-900 antialiased bg-slate-50/50;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-display tracking-tight;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
+}
+
+/* Glassmorphism effects */
+.glass {
+  @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-sm;
+}
+
+/* Kanban Column Height */
+.kanban-column {
+  height: calc(100vh - 220px);
+}
+
+/* Card Hover Effects */
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5;
+}
+
+/* Input Focus Ring */
+input:focus, select:focus, textarea:focus {
+  @apply ring-2 ring-brand-yellow/20 border-brand-yellow outline-none transition-all;
+}
