@@ -11,13 +11,15 @@ service cloud.firestore {
     function isDefaultAdmin() {
       return isAuthenticated() && 
              (request.auth.token.email == "lucas@lemcontabilidade.com" ||
-              request.auth.token.email == "rodolfoteodoronascimento@gmail.com");
+              request.auth.token.email == "rodolfoteodoronascimento@gmail.com" ||
+              request.auth.token.email == "contato@contabillm.com.br");
     }
 
     function isAdmin() {
       return isAuthenticated() && (
         request.auth.token.email == "lucas@lemcontabilidade.com" ||
         request.auth.token.email == "rodolfoteodoronascimento@gmail.com" ||
+        request.auth.token.email == "contato@contabillm.com.br" ||
         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
       );

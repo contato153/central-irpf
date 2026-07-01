@@ -99,14 +99,22 @@ export const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           let fetchedProfile: UserProfile | null = null;
           if (userDoc.exists()) {
             fetchedProfile = userDoc.data() as UserProfile;
-            const isDefaultAdmin = firebaseUser.email === 'lucas@lemcontabilidade.com' || firebaseUser.email === 'rodolfoteodoronascimento@gmail.com';
+            const isDefaultAdmin = firebaseUser.email === 'lucas@lemcontabilidade.com' || 
+                                   firebaseUser.email === 'rodolfoteodoronascimento@gmail.com' ||
+                                   firebaseUser.email === 'contato@contabillm.com.br';
             if (isDefaultAdmin && fetchedProfile.role !== 'admin') {
               fetchedProfile.role = 'admin';
-              await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+              try {
+                await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+              } catch (e) {
+                console.warn('Could not save admin role to Firestore (rules might not be deployed yet):', e);
+              }
             }
           } else {
             // Auto-create profile for first-time login
-            const isDefaultAdmin = firebaseUser.email === 'lucas@lemcontabilidade.com' || firebaseUser.email === 'rodolfoteodoronascimento@gmail.com';
+            const isDefaultAdmin = firebaseUser.email === 'lucas@lemcontabilidade.com' || 
+                                   firebaseUser.email === 'rodolfoteodoronascimento@gmail.com' ||
+                                   firebaseUser.email === 'contato@contabillm.com.br';
             const emailPrefix = firebaseUser.email ? firebaseUser.email.split('@')[0] : '';
             // Capitalize email prefix for a cleaner name display
             const fallbackName = emailPrefix 
@@ -172,7 +180,9 @@ export const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             }
           } else {
             // Create transient in-memory local profile so the UI doesn't crash or get stuck on loading
-            const isDefaultAdmin = firebaseUser.email === 'lucas@lemcontabilidade.com' || firebaseUser.email === 'rodolfoteodoronascimento@gmail.com';
+            const isDefaultAdmin = firebaseUser.email === 'lucas@lemcontabilidade.com' || 
+                                   firebaseUser.email === 'rodolfoteodoronascimento@gmail.com' ||
+                                   firebaseUser.email === 'contato@contabillm.com.br';
             const localProfile: UserProfile = {
               id: firebaseUser.uid,
               email: firebaseUser.email || '',
