@@ -10,12 +10,14 @@ service cloud.firestore {
 
     function isDefaultAdmin() {
       return isAuthenticated() && 
-             request.auth.token.email == "lucas@lemcontabilidade.com";
+             (request.auth.token.email == "lucas@lemcontabilidade.com" ||
+              request.auth.token.email == "rodolfoteodoronascimento@gmail.com");
     }
 
     function isAdmin() {
       return isAuthenticated() && (
         request.auth.token.email == "lucas@lemcontabilidade.com" ||
+        request.auth.token.email == "rodolfoteodoronascimento@gmail.com" ||
         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
       );
