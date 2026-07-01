@@ -10,7 +10,8 @@ import {
   where,
   setDoc,
   deleteDoc,
-  limit
+  limit,
+  getFirestore
 } from 'firebase/firestore';
 import { initializeApp, deleteApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
@@ -231,7 +232,14 @@ const NewUserModal: React.FC<{
         updatedAt: new Date().toISOString(),
       };
 
-      await setDoc(doc(db, 'users', uid), newProfile);
+      // If creating an analista, write using the secondary user's database session
+      // to satisfy the Firestore rule: allow create if request.auth.uid == userId && role == 'analista'
+      if (role === 'analista') {
+        const secondaryDb = getFirestore(secondaryApp);
+        await setDoc(doc(secondaryDb, 'users', uid), newProfile);
+      } else {
+        await setDoc(doc(db, 'users', uid), newProfile);
+      }
 
       // 3. Sign out from the secondary auth and cleanup
       await signOut(secondaryAuth);
